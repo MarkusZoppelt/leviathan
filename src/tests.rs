@@ -24,9 +24,6 @@ mod tests {
 
         assert_eq!(acc.available(), 0.1337);
         assert_eq!(acc.total(), 0.1337);
-
-        // check edge case "no sufficient funds"
-        assert_eq!(acc.withdraw(50.0), false);
     }
 
     #[test]
