@@ -19,7 +19,7 @@ impl TransactionHandler {
         self.accounts
     }
 
-    pub fn process(&mut self, transaction: Transaction) {
+    pub async fn process(&mut self, transaction: Transaction) {
         let transaction_type = transaction.tx_type();
         match transaction_type {
             deposit => {
@@ -29,13 +29,13 @@ impl TransactionHandler {
                         .insert(transaction.client(), Account::new(&transaction.client()));
                 }
                 if let Some(acc) = self.accounts.get_mut(&transaction.client()) {
-                    acc.deposit(transaction.amount());
+                    acc.deposit(transaction.amount()).await;
                     self.transactions.insert(transaction.tx(), transaction);
                 };
             }
             withdrawal => {
                 if let Some(acc) = self.accounts.get_mut(&transaction.client()) {
-                    acc.withdraw(transaction.amount());
+                    acc.withdraw(transaction.amount()).await;
                     self.transactions.insert(transaction.tx(), transaction);
                 } else {
                     eprintln!("Error: acc does not exist");
@@ -46,7 +46,7 @@ impl TransactionHandler {
                     eprintln!("Warning: tx does not exist. Ignoring.")
                 } else {
                     if let Some(acc) = self.accounts.get_mut(&transaction.client()) {
-                        acc.dispute(&transaction);
+                        acc.dispute(&transaction).await;
                     } else {
                         eprintln!("Error: acc does not exist");
                     }
@@ -57,7 +57,7 @@ impl TransactionHandler {
                     eprintln!("Warning: tx does not exist. Ignoring.")
                 } else {
                     if let Some(acc) = self.accounts.get_mut(&transaction.client()) {
-                        acc.resolve(&transaction);
+                        acc.resolve(&transaction).await;
                     } else {
                         eprintln!("Error: acc does not exist");
                     }
@@ -68,7 +68,7 @@ impl TransactionHandler {
                     eprintln!("Warning: tx does not exist. Ignoring.")
                 } else {
                     if let Some(acc) = self.accounts.get_mut(&transaction.client()) {
-                        acc.chargeback(&transaction);
+                        acc.chargeback(&transaction).await;
                     } else {
                         eprintln!("Error: acc does not exist");
                     }

@@ -47,7 +47,7 @@ impl Account {
         self.locked
     }
 
-    pub fn deposit(&mut self, amount: f32) -> bool {
+    pub async fn deposit(&mut self, amount: f32) -> bool {
         // FYI: allowing users to deposit even when locked :P
 
         let _x = round_number(self.available + amount);
@@ -56,7 +56,7 @@ impl Account {
         true
     }
 
-    pub fn withdraw(&mut self, amount: f32) -> bool {
+    pub async fn withdraw(&mut self, amount: f32) -> bool {
         if self.locked() {
             return false;
         }
@@ -72,7 +72,7 @@ impl Account {
         }
     }
 
-    pub fn dispute(&mut self, tx: &Transaction) -> bool {
+    pub async fn dispute(&mut self, tx: &Transaction) -> bool {
         if self.locked() {
             return false;
         }
@@ -85,7 +85,7 @@ impl Account {
         false
     }
 
-    pub fn resolve(&mut self, tx: &Transaction) -> bool {
+    pub async fn resolve(&mut self, tx: &Transaction) -> bool {
         if self.locked() {
             return false;
         }
@@ -98,7 +98,7 @@ impl Account {
         true
     }
 
-    pub fn chargeback(&mut self, tx: &Transaction) -> bool {
+    pub async fn chargeback(&mut self, tx: &Transaction) -> bool {
         if self.locked() {
             return false;
         }
@@ -111,11 +111,11 @@ impl Account {
         true
     }
 
-    pub fn lock(&mut self) {
+    pub async fn lock(&mut self) {
         self.locked = true;
     }
 
-    pub fn unlock(&mut self) {
+    pub async fn unlock(&mut self) {
         self.locked = false;
     }
 }
